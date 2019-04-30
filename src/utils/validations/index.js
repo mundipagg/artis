@@ -89,16 +89,6 @@ const hasRequiredPageData = (page, props, childrenPage) => {
     return addressHasAllProps(billing) && addressHasAllProps(shipping)
   }
 
-  if (page === 'payment') {
-    const paymentHasAllProps = allPass([
-      prop('cardId'),
-    ])
-
-    const creditCard = pathOr({}, ['creditCard'], props)
-
-    return paymentHasAllProps(creditCard)
-  }
-
   return false
 }
 

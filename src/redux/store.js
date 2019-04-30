@@ -1,5 +1,4 @@
 import { createStore, applyMiddleware } from 'redux'
-import { prop } from 'ramda'
 import reducers from './reducers'
 import calcAmount from '../utils/calculations/calcAmount'
 
@@ -22,9 +21,6 @@ export default ({
   return createStore(
     reducers,
     {
-      creditCard: {
-        cardId: prop('cardId', transaction),
-      },
       pageInfo: {
         customer,
         shipping,

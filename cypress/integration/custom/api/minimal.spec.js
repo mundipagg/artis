@@ -82,7 +82,6 @@ describe('Custom', () => {
               orderUrl: 'http://www.google.com',
               enableCart: true,
               createTransaction: true,
-              allowSaveCreditCard: true,
             }
 
             const checkout = createCheckout({

@@ -39,7 +39,6 @@ import {
   addInstallments,
   addPageInfo,
   addTransactionValues,
-  updateCardId,
 } from '../../redux/actions'
 import strategies from '../../utils/strategies'
 import getErrorMessage from '../../utils/data/errorMessages'
@@ -527,8 +526,6 @@ class Checkout extends React.Component {
       finalAmount,
     } = this.props
 
-    const cardId = pathOr(null, ['creditCard', 'cardId'], this.props)
-
     const {
       configs = {},
       key,
@@ -550,7 +547,6 @@ class Checkout extends React.Component {
     const items = propOr([], 'items', cart)
 
     const requestPayload = {
-      cardId,
       ...pageInfo,
       createTransaction,
       items,
@@ -572,21 +568,6 @@ class Checkout extends React.Component {
       })
   }
 
-  saveCreditCard = () => {
-    const { creditCard, acquirerName } = this.props
-    const key = path(['apiData', 'key'], this.props)
-
-    const payload = assoc('encryption_key', key, creditCard)
-
-    const request = strategies[acquirerName].createCard
-
-    return request(payload)
-      .then((response) => {
-        this.props.updateCardId(response)
-        this.navigateNextPage()
-      })
-  }
-
   renderPages () {
     const {
       apiData,
@@ -596,11 +577,6 @@ class Checkout extends React.Component {
     const enableCart = pathOr(false, [
       'configs',
       'enableCart',
-    ], apiData)
-
-    const allowSaveCreditCard = path([
-      'configs',
-      'allowSaveCreditCard',
     ], apiData)
 
     const antifraud = pathOr(true, ['configs', 'antifraud'], apiData)
@@ -621,12 +597,6 @@ class Checkout extends React.Component {
         <State value="initialData">
           <LoadingInfo
             title="Carregando"
-            subtitle="Aguarde..."
-          />
-        </State>
-        <State value="saveCreditCard">
-          <LoadingInfo
-            title="Salvando seu cartão"
             subtitle="Aguarde..."
           />
         </State>
@@ -672,8 +642,6 @@ class Checkout extends React.Component {
             handlePageTransition={this.handlePageTransition}
             handlePreviousButton={this.navigatePreviousPage}
             handleSubmit={this.handleFormSubmit}
-            saveCreditCard={this.saveCreditCard}
-            allowSaveCreditCard={allowSaveCreditCard}
             transaction={transaction}
           />
         </State>
@@ -821,7 +789,6 @@ Checkout.propTypes = {
   theme: PropTypes.shape(),
   transaction: PropTypes.shape(),
   transition: PropTypes.func.isRequired,
-  updateCardId: PropTypes.func.isRequired,
 }
 
 Checkout.defaultProps = {
@@ -844,6 +811,5 @@ const mapStateToProps = ({
 export default connect(mapStateToProps, {
   handleAddPageInfo: addPageInfo,
   handleAddTransactionValues: addTransactionValues,
-  updateCardId,
   handleAddInstallments: addInstallments,
 })(consumeTheme(withStatechart(statechart)(Checkout)))

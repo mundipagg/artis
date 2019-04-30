@@ -82,12 +82,6 @@ export default {
       },
       onEntry: 'getInitialData',
     },
-    saveCreditCard: {
-      on: {
-        NEXT: 'confirmation',
-      },
-      onEntry: 'saveCreditCard',
-    },
     customer: {
       on: {
         NEXT: {
@@ -112,7 +106,6 @@ export default {
           },
         },
         NEXT: 'confirmation',
-        SAVE_CREDIT_CARD: 'saveCreditCard',
       },
       onEntry: 'navigateToPage',
       ...paymentStates,

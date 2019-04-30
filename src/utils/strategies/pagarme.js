@@ -8,7 +8,6 @@ import {
   equals,
   identity,
   ifElse,
-  isNil,
   map,
   merge,
   of,
@@ -236,11 +235,9 @@ const getInstallments = (key, amount, installment) => {
     }))
   )
 
-  return () => (
-    fetch(url, configs)
-      .then(response => response.json())
-      .then(parseInstallmentResponse)
-  )
+  return fetch(url, configs)
+    .then(response => response.json())
+    .then(parseInstallmentResponse)
 }
 
 const parseCardId = applySpec({
@@ -299,7 +296,6 @@ const request = (data) => {
 const prepare = (apiData) => {
   const { key, transaction } = apiData
   const amount = propOr(0, 'amount', transaction)
-  const cardId = path(['creditCard', 'cardId'], apiData)
 
   const installments = pathOr({}, [
     'paymentConfig',
@@ -307,15 +303,9 @@ const prepare = (apiData) => {
     'installments',
   ], transaction)
 
-  const shouldGetInstallments = ifElse(
-    isNil,
-    getInstallments(key, amount, installments),
-    always(Promise.resolve),
-  )(cardId)
-
   return Promise.all([
     getCheckoutData(apiData),
-    shouldGetInstallments,
+    getInstallments(key, amount, installments),
   ])
 }
 

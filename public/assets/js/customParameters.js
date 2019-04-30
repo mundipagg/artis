@@ -18,7 +18,6 @@ const configs = {
   orderUrl: 'http://www.google.com',
   enableCart: true,
   createTransaction: true,
-  allowSaveCreditCard: true,
   antifraud: false,
   postback: 'http://pagar.me',
 }
@@ -101,10 +100,7 @@ const cart = {
 
 const transaction = {
   amount: 10000,
-  //cardId: 'card_cjjr96qt401k5236eaqvhpvpf',
   paymentMethods: [
-    ['creditcard', 'creditcard'],
-    ['creditcard', 'boleto'],
     'creditcard',
     'boleto',
   ],

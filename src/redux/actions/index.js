@@ -1,8 +1,3 @@
-export const addCreditCard = payload => ({
-  type: 'ADD_CREDIT_CARD',
-  payload,
-})
-
 export const addInstallments = payload => ({
   type: 'ADD_INSTALLMENTS',
   payload,
@@ -21,11 +16,6 @@ export const addTransactionValues = payload => ({
 export const changeScreenSize = size => ({
   type: 'CHANGE_SCREEN_SIZE',
   size,
-})
-
-export const updateCardId = payload => ({
-  type: 'UPDATE_CARD_ID',
-  payload,
 })
 
 export const updateFinalAmount = payload => ({

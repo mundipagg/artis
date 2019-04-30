@@ -24,7 +24,6 @@ import {
 import {
   Dropdown,
   FormInput,
-  Switch,
   ThemeConsumer,
 } from 'former-kit'
 
@@ -37,7 +36,6 @@ import {
 } from '../../utils/validations'
 
 import {
-  addCreditCard,
   addPageInfo,
   updateFinalAmount,
 } from '../../redux/actions'
@@ -86,7 +84,6 @@ class CreditCardPage extends Component {
     this.state = {
       ...transaction,
       flipped: false,
-      saveCart: false,
     }
 
     this.setTextInputRef = (element) => {
@@ -144,11 +141,8 @@ class CreditCardPage extends Component {
   })
 
   handleFormSubmit = (formValues, errors) => {
-    const { saveCart } = this.state
     const {
       installments,
-      handleAddCreditCard,
-      handlePageTransition,
       handleSubmit,
       handlePageChange,
       transaction,
@@ -184,15 +178,7 @@ class CreditCardPage extends Component {
 
     this.setState({ formValid })
 
-    if (saveCart && !formValid) {
-      const cardData = this.formatCreditCardForm(formValues)
-      handleAddCreditCard(cardData)
-      handlePageTransition('SAVE_CREDIT_CARD')()
-    }
-
-    if (!saveCart) {
-      handleSubmit(formValues, errors)
-    }
+    handleSubmit(formValues, errors)
   }
 
   handleFlipCard = () => {
@@ -202,22 +188,6 @@ class CreditCardPage extends Component {
     }))
   }
 
-  handleSaveCartChange = () => {
-    this.setState((previousState) => {
-      const newSaveCart = !previousState.saveCart
-
-      ReactGA.event({
-        category: 'CreditCard',
-        action: 'Change Save Cart',
-        label: `${newSaveCart}`,
-      })
-
-      return {
-        ...previousState,
-        saveCart: newSaveCart,
-      }
-    })
-  }
 
   render () {
     const {
@@ -226,11 +196,9 @@ class CreditCardPage extends Component {
       holderName,
       expiration,
       cvv,
-      saveCart,
     } = this.state
 
     const {
-      allowSaveCreditCard,
       finalAmount,
       enableCart,
       handlePreviousButton,
@@ -296,20 +264,6 @@ class CreditCardPage extends Component {
               holderName={defaultHolderName(holderName)}
               number={defaultCardNumber(cardNumber)}
             />
-            {
-              allowSaveCreditCard &&
-              <React.Fragment>
-                <p>Habilitar compra com 1 clique</p>
-                <Switch
-                  checked={saveCart}
-                  onChange={this.handleSaveCartChange}
-                  strings={{
-                    on: 'Sim',
-                    off: 'Não',
-                  }}
-                />
-              </React.Fragment>
-            }
           </div>
           <div className={theme.inputsContainer}>
             <FormInput
@@ -368,7 +322,6 @@ class CreditCardPage extends Component {
 }
 
 CreditCardPage.propTypes = {
-  allowSaveCreditCard: PropTypes.bool,
   theme: PropTypes.shape({
     creditcardForm: PropTypes.string,
     content: PropTypes.string,
@@ -388,12 +341,10 @@ CreditCardPage.propTypes = {
   }),
   enableCart: PropTypes.bool,
   finalAmount: PropTypes.number.isRequired,
-  handleAddCreditCard: PropTypes.func.isRequired,
   handlePageChange: PropTypes.func.isRequired,
   handlePreviousButton: PropTypes.func.isRequired,
   handleSubmit: PropTypes.func.isRequired,
   handleUpdateFinalAmount: PropTypes.func.isRequired,
-  handlePageTransition: PropTypes.func.isRequired,
   installments: PropTypes.oneOfType([
     PropTypes.array,
     PropTypes.object,
@@ -420,7 +371,6 @@ CreditCardPage.propTypes = {
 }
 
 CreditCardPage.defaultProps = {
-  allowSaveCreditCard: false,
   payment: {},
   callbacks: {},
   enableCart: false,
@@ -438,5 +388,4 @@ const mapStateToProps = ({ installments, transactionValues, pageInfo }) => ({
 export default connect(mapStateToProps, {
   handlePageChange: addPageInfo,
   handleUpdateFinalAmount: updateFinalAmount,
-  handleAddCreditCard: addCreditCard,
 })(consumeTheme(CreditCardPage))
